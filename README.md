@@ -26,4 +26,4 @@ This program is a random walk generator which includes a variety of simulation t
   
 **Cops and Robbers:** Simulation is completed on an 8 by 8 grid.
   This is the most complex simulation of this program as it involves multiple search nodes (cops) and target nodes (robbers).
-  This program will be completed by January 1 2022.
+  This program will be completed by January 30 2022.
