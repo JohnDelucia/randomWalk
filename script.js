@@ -1,13 +1,17 @@
+
+//allows use to utilize all canvas functions
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
-var directions = 1;
+//declaring and initializing important variables used throughout code
+var directions = 1; 
 var page = 1;
 var count = 0;
 var surroundedBy = 0;
 var startIndex;
 
-var begin = {
+//declaring variables (buttons) for the home page
+var begin = { 
 	x: 210, 
 	y: 263, 
 	w: 180, 
@@ -70,10 +74,18 @@ var startSimulation = {
  	h: 40
  };
 
-const start = canvas.width/2 - 30;
+var returnMessage = {
+	x: startSimulation.x-5,
+	y: startSimulation.y-5, 
+ 	w: startSimulation.w+10,
+ 	h: startSimulation.h+10
+ };
 
-var arrayOfRectsMulti = [];
 
+const start = canvas.width/2 - 30; //left side of 8x8 grid
+var arrayOfRectsMulti = []; //array of rectangles used for the multi faced simulations (Cubic Exterior)
+
+//first direction: cops and robbers
 function copsRobbersDirection() {
 	ctx.textAlign = "center";
 	ctx.fillStyle = 'black';
@@ -82,12 +94,14 @@ function copsRobbersDirection() {
 	ctx.fillText("the Robber Before They Find the Gems", canvas.width/2, 80);
 }
 
+//drawing cops: cops and robbers
 function drawStationaryCops() {
 	ctx.fillStyle = 'rgb(56, 152, 236)';
 	ctx.fillRect(202, 277, 46, 46);
 	ctx.fillRect(302, 377, 46, 46);
 }
 
+//first direction for multi face simulations (Cubic Exterior)
 function multiDirectionOne() {
 	ctx.textAlign = "center";
 	ctx.fillStyle = 'black';
@@ -95,6 +109,7 @@ function multiDirectionOne() {
 	ctx.fillText("Please Select a Starting Position", canvas.width/2, 35);
 }
 
+//second direction for multi face simulations (Cubic Exterior)
 function multiDirectionTwo() {
 	ctx.textAlign = "center";
 	ctx.fillStyle = 'black';
@@ -102,6 +117,7 @@ function multiDirectionTwo() {
 	ctx.fillText("Please Select a Target Position", canvas.width/2, 35);
 }
 
+//third direction for multi face simulations (Cubic Exterior)
 function multiDirectionThree() {
 	ctx.textAlign = "center";
 	ctx.fillStyle = 'black';
@@ -109,7 +125,8 @@ function multiDirectionThree() {
 	ctx.fillText("Please Enjoy the Simulation", canvas.width/2, 35);
 }
 
-function drawPageOne() { //Home Page
+//drawing first page 
+function drawPageOne() { 
  	ctx.textAlign = "center";
 	ctx.fillStyle = 'black';
 	ctx.font = "25px Arial";
@@ -123,14 +140,17 @@ function drawPageOne() { //Home Page
 	ctx.fillText("Begin", canvas.width/2, 300);
  }
 
-function drawPageTwo() { //Select Random Walk Type
+//drawing home page where user selects type of simulation
+function drawPageTwo() { 
 	ctx.textAlign = "center";
 	ctx.fillStyle = 'black';
 	ctx.font = "25px Arial";
+	//titles
 	ctx.fillText("Please Select the Type of Random Walk", canvas.width/2, 50);
 	ctx.fillText("Singular Face", canvas.width/4, 130);
 	ctx.fillText("Cubic Exterior", canvas.width*3/4, 130);
 	ctx.fillText("Cops + Robbers", canvas.width*3/4, 420);
+	//underlining  titles
 	ctx.beginPath();
 	ctx.moveTo(50, 145);
 	ctx.lineTo(250, 145);
@@ -198,7 +218,8 @@ function drawPageTwo() { //Select Random Walk Type
 	ctx.fillText("Play!", canvas.width*3/4, 520);
 }
 
-function directionOne() { //Select Random Walk Type
+//first direction used for all single faced simulations on 8x8 grid
+function directionOne() { 
 	ctx.textAlign = "center";
 	ctx.fillStyle = 'black';
 	ctx.font = "25px Arial";
@@ -210,6 +231,7 @@ function directionOne() { //Select Random Walk Type
 	ctx.stroke();
 }
 
+//search node movement for headed simulation
 function headedMovement() {
 	if (currentPos.x > targetPos.x) { //move left toward target
 		return 0;
@@ -222,21 +244,22 @@ function headedMovement() {
 	}
 }
 
+//no backtracking: determines if the search node is surrounded meaning it collides with itself
 function checkIfSurrounded() {
-	for (let i = 0; i < 64; i++) {
-		if (currentPos.x == 100) {
-			if (currentPos.y == 125) { //Top left corner square
-				if (arrayOfRects[i].x == 150 && arrayOfRects[i].y == 125 && arrayOfRects[i].walls == 1) {
+	for (let i = 0; i < 64; i++) { //run through all 64 squares
+		if (currentPos.x == 100) { //if search node is in the left most column
+			if (currentPos.y == 125) { //if search node is in top left corner square
+				if (arrayOfRects[i].x == 150 && arrayOfRects[i].y == 125 && arrayOfRects[i].walls == 1) {  //if square directly right of the search node has been visited
 					surroundedBy++;
-				} else if (arrayOfRects[i].x == 100 && arrayOfRects[i].y == 175 && arrayOfRects[i].walls == 1) {
+				} else if (arrayOfRects[i].x == 100 && arrayOfRects[i].y == 175 && arrayOfRects[i].walls == 1) { //if square directly below the search node has been visited
 					surroundedBy++;
-				} else if (arrayOfRects[i].x == 100 && arrayOfRects[i].y == 475 && arrayOfRects[i].walls == 1) {
+				} else if (arrayOfRects[i].x == 100 && arrayOfRects[i].y == 475 && arrayOfRects[i].walls == 1) { //if square directly above the search node (bottom left of grid) has been visited
 					surroundedBy++;
-				} else if (arrayOfRects[i].x == 450 && arrayOfRects[i].y == 125 && arrayOfRects[i].walls == 1) {
+				} else if (arrayOfRects[i].x == 450 && arrayOfRects[i].y == 125 && arrayOfRects[i].walls == 1) { //if square directly left of the search node (top right of grid) has been visited
 					surroundedBy++;
 				}
-			} else if (currentPos.y == 475) { //Bottom left corner square
-				if (arrayOfRects[i].x == 150 && arrayOfRects[i].y == 475 && arrayOfRects[i].walls == 1) {
+			} else if (currentPos.y == 475) { //if search node is in bottom left corner square
+				if (arrayOfRects[i].x == 150 && arrayOfRects[i].y == 475 && arrayOfRects[i].walls == 1) { 
 					surroundedBy++;
 				} else if (arrayOfRects[i].x == 100 && arrayOfRects[i].y == 425 && arrayOfRects[i].walls == 1) {
 					surroundedBy++;
@@ -245,7 +268,7 @@ function checkIfSurrounded() {
 				} else if (arrayOfRects[i].x == 450 && arrayOfRects[i].y == 475 && arrayOfRects[i].walls == 1) {
 					surroundedBy++;
 				}
-			} else {
+			} else { //if search node is in the left most column but is not a corner square
 				if (currentPos.x + 50 == arrayOfRects[i].x && currentPos.y == arrayOfRects[i].y && arrayOfRects[i].walls == 1) {
 					surroundedBy++;
 				} else if (arrayOfRects[i].x == 100 && currentPos.y - 50 == arrayOfRects[i].y && arrayOfRects[i].walls == 1) {
@@ -257,8 +280,8 @@ function checkIfSurrounded() {
 				}
 			}
 		}
-		else if (currentPos.x == 450) {
-			if (currentPos.y == 125) { //Top right corner square
+		else if (currentPos.x == 450) { //if search node is in the right most column
+			if (currentPos.y == 125) { //if search node is in the top right corner square
 				if (arrayOfRects[i].x == 400 && arrayOfRects[i].y == 125 && arrayOfRects[i].walls == 1) {
 					surroundedBy++;
 				} else if (arrayOfRects[i].x == 450 && arrayOfRects[i].y == 175 && arrayOfRects[i].walls == 1) {
@@ -268,7 +291,7 @@ function checkIfSurrounded() {
 				} else if (arrayOfRects[i].x == 100 && arrayOfRects[i].y == 125 && arrayOfRects[i].walls == 1) {
 					surroundedBy++;
 				}
-			} else if (currentPos.y == 475) { //Bottom right corner square
+			} else if (currentPos.y == 475) { //if search node is in the bottom right corner square
 				if (arrayOfRects[i].x ==  400 && arrayOfRects[i].y == 475 && arrayOfRects[i].walls == 1) {
 					surroundedBy++;
 				} else if (arrayOfRects[i].x == 450 && arrayOfRects[i].y == 425 && arrayOfRects[i].walls == 1) {
@@ -278,7 +301,7 @@ function checkIfSurrounded() {
 				} else if (arrayOfRects[i].x == 100 && arrayOfRects[i].y == 475 && arrayOfRects[i].walls == 1) {
 					surroundedBy++;
 				}
-			} else { //Non corner border squares
+			} else { //if search node is in the right most column but is not a corner square
 				if (currentPos.x - 50 == arrayOfRects[i].x && currentPos.y == arrayOfRects[i].y && arrayOfRects[i].walls == 1) {
 					surroundedBy++;
 				} else if (arrayOfRects[i].x == 450 && currentPos.y - 50 == arrayOfRects[i].y && arrayOfRects[i].walls == 1) {
@@ -289,7 +312,7 @@ function checkIfSurrounded() {
 					surroundedBy++;
 				}
 			}
-		} else if (currentPos.y == 125) {
+		} else if (currentPos.y == 125) { //if search node is in the top row but is not a corner square (already checked)
 			if (currentPos.x - 50 == arrayOfRects[i].x && currentPos.y == arrayOfRects[i].y && arrayOfRects[i].walls == 1) {
 				surroundedBy++;
 			} else if (currentPos.x + 50 == arrayOfRects[i].x && currentPos.y == arrayOfRects[i].y && arrayOfRects[i].walls == 1) {
@@ -299,7 +322,7 @@ function checkIfSurrounded() {
 			} else if (currentPos.x == arrayOfRects[i].x && arrayOfRects[i].y == 475  && arrayOfRects[i].walls == 1) {
 				surroundedBy++;
 			}
-		} else if (currentPos.y == 475) {
+		} else if (currentPos.y == 475) { //if search node is in the bottom row but is not a corner square (already checked)
 			if (currentPos.x - 50 == arrayOfRects[i].x && currentPos.y == arrayOfRects[i].y && arrayOfRects[i].walls == 1) {
 				surroundedBy++;
 			} else if (currentPos.x + 50 == arrayOfRects[i].x && currentPos.y == arrayOfRects[i].y && arrayOfRects[i].walls == 1) {
@@ -309,7 +332,7 @@ function checkIfSurrounded() {
 			} else if (currentPos.x == arrayOfRects[i].x && arrayOfRects[i].y == 125  && arrayOfRects[i].walls == 1) {
 				surroundedBy++;
 			}
-		} else {
+		} else { //if search node is not in a bounding square (somewhere inside the grid)
 			if (currentPos.x == arrayOfRects[i].x && currentPos.y  == arrayOfRects[i].y - 50 && arrayOfRects[i].walls == 1) {
 				surroundedBy++;
 			} else if (currentPos.x == arrayOfRects[i].x && currentPos.y  == arrayOfRects[i].y + 50 && arrayOfRects[i].walls == 1) {
@@ -321,29 +344,16 @@ function checkIfSurrounded() {
 			}
 		}
 	}
-	if (surroundedBy == 4) {
-		surroundedBy = 0;
-		return true;
+	if (surroundedBy == 4) { //if search node is completely surrounded
+		surroundedBy = 0; //reset surrounded by
+		return true; 
 	} else {
-		surroundedBy = 0;
-		return false;
+		surroundedBy = 0; 
+		return false; 
 	}
 }
 
-
-
-function pageThreeDirectionTwo() {
-	ctx.textAlign = "center";
-	ctx.fillStyle = 'black';
-	ctx.font = "25px Arial";
-	ctx.fillText("Please Select a Target Position", canvas.width/2, 70);
-	ctx.beginPath();
-	ctx.moveTo(50, 90);
-	ctx.lineTo(550, 90);
-	ctx.lineWidth = 1.5;
-	ctx.stroke();
-}
-
+//direction to place obstacles in 'Obstacles'
 function pageFourDirectionTwo() {
 	ctx.textAlign = "center";
 	ctx.fillStyle = 'black';
@@ -357,6 +367,7 @@ function pageFourDirectionTwo() {
 	ctx.fillText("Done", canvas.width/2, 90);
 }
 
+//direction to select a target position: used in 'Heading', 'Obstacles', 'No Backtracking', 'Target Finding'
 function selectTarget() {
 	ctx.textAlign = "center";
 	ctx.fillStyle = 'black';
@@ -369,6 +380,7 @@ function selectTarget() {
 	ctx.stroke();
 }
 
+//direction to enjoy the simulation used in all simulations
 function enjoySimulation() {
 	ctx.textAlign = "center";
 	ctx.fillStyle = 'black';
@@ -381,32 +393,19 @@ function enjoySimulation() {
 	ctx.stroke();
 }
 
-function drawSecondDirection() {
+function drawTemporaryMessage() {
 	ctx.textAlign = "center";
 	ctx.fillStyle = 'black';
 	ctx.font = "25px Arial";
-	ctx.fillText("Please Place Some Obstacles in the Grid", canvas.width/2, 45);
- 	ctx.fillRect(startSimulation.x, startSimulation.y, startSimulation.w, startSimulation.h);
+	ctx.fillText("This Simulation is Still Being Developed", canvas.width/2, 45);
+	ctx.fillStyle = 'rgb(56, 152, 236)';
+ 	ctx.fillRect(startSimulation.x-5, startSimulation.y-5, startSimulation.w+10, startSimulation.h+10);
  	ctx.fillStyle = 'white';
- 	ctx.fillRect(startSimulation.x+5, startSimulation.y+5, startSimulation.w-10, startSimulation.h-10);
+ 	ctx.fillRect(startSimulation.x, startSimulation.y, startSimulation.w, startSimulation.h);
  	ctx.fillStyle = 'black';
-	ctx.fillText("Done", canvas.width/2, 90)
+	ctx.fillText("Return", canvas.width/2, 90);
 }
-
-function drawThirdDirection() {
-	ctx.textAlign = "center";
-	ctx.fillStyle = 'black';
-	ctx.font = "25px Arial";
-	ctx.fillText("Please Select a Target", canvas.width/2, 70);
-}
-
-function drawFourthDirection() {
-	ctx.textAlign = "center";
-	ctx.fillStyle = 'black';
-	ctx.font = "25px Arial";
-	ctx.fillText("Enjoy the Simulation!", canvas.width/2, 70);
-}
-
+//reset all obstacles and visited squares to unvisited (set to 0)
 function clearWalls() {
 	for (let i = 0; i < 64; i++) {
 		arrayOfRects[i].walls = 0;
@@ -414,6 +413,7 @@ function clearWalls() {
 	}
 }
 
+//check if obstacle is hit by search node
 function checkWallHit(x, y) {
 	for (let i = 0; i < 64; i++) {
 		if (arrayOfRects[i].x == x && arrayOfRects[i].y == y && arrayOfRects[i].walls == 1) {
@@ -423,6 +423,7 @@ function checkWallHit(x, y) {
 	return false;
 }
 
+//if a square is visited it becomes an obstacle and cannot be revisited: used in no backtracking
 function noBackTracking(x, y) {
 	for (let i = 0; i < 64; i++) {
 		if (arrayOfRects[i].x == x && arrayOfRects[i].y == y) {
@@ -431,6 +432,7 @@ function noBackTracking(x, y) {
 	}
 }
 
+//check if the grid is filled in 8x8 simulation
 function checkGridFilled() {
 	for (let i = 0; i < 64; i++) {
 		if (arrayOfRects[i].hit == 0) {
@@ -440,6 +442,7 @@ function checkGridFilled() {
 	return true;
 }
 
+//check if the grids are filled in Cubic Exterior simulation
 function checkGridFilledMulti() {
 	for (let i = 0; i < 54; i++) {
 		if (arrayOfRectsMulti[i].hit == 0) {
@@ -449,11 +452,12 @@ function checkGridFilledMulti() {
 	return true;
 }
 
-
+//if search node finds the target node return true
 function checkCollisionOnTarget() {
 	return (currentPos.x == targetPos.x) && (currentPos.y == targetPos.y);
 }
 
+//clear all walls, reset to homepage, reset count to 0
 function reset() {
 	clearWalls();
 	directions = 1;
@@ -461,6 +465,7 @@ function reset() {
 	count = 0;
 }
 
+//reset everything from cubic exterior simulations
 function resetMulti() {
 	for (let i = 0; i < 54; i++) {
 		arrayOfRectsMulti[i].hit = 0;
@@ -470,6 +475,7 @@ function resetMulti() {
 	count = 0;
 }
 
+//draws 8x8 grid used for 'Headed', 'Obstacles', 'No Backtracking', and 'Grid Filling Simulations'
 function drawBox() {
 	for (let i = 0; i <= 8; i++) {
 		ctx.beginPath();
@@ -483,6 +489,7 @@ function drawBox() {
 	}
 }
 
+//declare and initialize current pos
 var currentPos = {
 	x: 0,
 	y: 0,
@@ -490,6 +497,7 @@ var currentPos = {
 	h: 50
 };
 
+//declare and initialize target pos
 var targetPos = {
 	x: 0,
 	y: 0,
@@ -497,36 +505,43 @@ var targetPos = {
 	h: 50
 };
 
+//draw target node for 8x8 grid simulations
 function drawTargetPos() {
 	ctx.fillStyle = 'orange';
 	ctx.fillRect(targetPos.x + 2, targetPos.y + 2, 46, 46);
 }
 
+//draw target node for cubic exterior simulations
 function drawMultiTargetPos() {
 	ctx.fillStyle = 'orange';
 	ctx.fillRect(targetPos.x + 1, targetPos.y + 1, 18, 18);
 }
 
+//draw search node for 8x8 grid simulations
 function drawCurrentPosition(x, y) {
 	ctx.fillStyle = 'rgb(56, 152, 236)';
 	ctx.fillRect(x + 2, y + 2, 46, 46);
 }
 
+//draw search node for cubic exterior simulations
 function drawCurrentMultiPosition(x, y) {
 	ctx.fillStyle = 'rgb(56, 152, 236)';
 	ctx.fillRect(x + 1, y + 1, 18, 18);
 }
 
+//draw starting position for 8x8 grid simulations
 function drawStartingPosition() {
 	ctx.fillStyle = 'rgb(56, 152, 236)';
 	ctx.fillRect(currentPos.x + 2, currentPos.y + 2, 46, 46);
 }
 
+//draw starting position for cubic exterior simulations
 function drawMultiStartingPosition() {
 	ctx.fillStyle = 'rgb(56, 152, 236)';
 	ctx.fillRect(currentPos.x + 1, currentPos.y + 1, 18, 18);
 }
 
+//draw user entered obstacles: used in 8x8 'Grid Filling' and 'Obstacles' 
 function drawWalls() {
 	for (let i = 0; i < 64; i++) {
 		if (arrayOfRects[i].walls == 1) {
@@ -536,6 +551,7 @@ function drawWalls() {
 	}
 }
 
+//draw labels for cubic exterior simulations
 function drawLabels() {
 	ctx.font = "22px Arial"
 	ctx.textAlign = "center";
@@ -546,9 +562,9 @@ function drawLabels() {
 	ctx.fillText("Back", canvas.width/2, 430);
 	ctx.fillText("Left", 135, 190);
 	ctx.fillText("Right", 465, 190);
-
 }
 
+//draw top of cube used in cubic exterior simulations
 function drawTop() {
 	for (let i = 0; i < 4; i++) {
 		ctx.beginPath();
@@ -561,6 +577,8 @@ function drawTop() {
 		ctx.stroke();
 	}
 }
+
+//draw front of cube used in cubic exterior simulations
 function drawFront() {
 	for (let i = 0; i < 4; i++) {
 		ctx.beginPath();
@@ -573,6 +591,8 @@ function drawFront() {
 		ctx.stroke();
 	}
 }
+
+//draw bottom of cube used in cubic exterior simulations
 function drawBottom() {
 	for (let i = 0; i < 4; i++) {
 		ctx.beginPath();
@@ -585,6 +605,8 @@ function drawBottom() {
 		ctx.stroke();
 	}
 }
+
+//draw back of cube used in cubic exterior simulations
 function drawBack() {
 	for (let i = 0; i < 4; i++) {
 		ctx.beginPath();
@@ -597,6 +619,8 @@ function drawBack() {
 		ctx.stroke();
 	}
 }
+
+//draw left side of cube used in cubic exterior simulations
 function drawLeft() {
 	for (let i = 0; i < 4; i++) {
 		ctx.beginPath();
@@ -609,6 +633,8 @@ function drawLeft() {
 		ctx.stroke();
 	}
 }
+
+//draw right side of cube used in cubic exterior simulations
 function drawRight() {
 	for (let i = 0; i < 4; i++) {
 		ctx.beginPath();
@@ -622,6 +648,7 @@ function drawRight() {
 	}
 }
 
+//declare and initialize rectangle
 var rect = {
     x: 0,
     y: 0,
@@ -631,6 +658,7 @@ var rect = {
     hit: 0
 };
 
+//trace path taken by the search node: used in 'Grid Filling' simulations
 function tracePath(x, y) {
 	for (let i = 0; i < 54; i++) {
 		if (arrayOfRectsMulti[i].x == x && arrayOfRectsMulti[i].y == y) {
@@ -640,6 +668,7 @@ function tracePath(x, y) {
 	}
 }
 
+//find the side tha the search node is on: used in cubic exterior simulations
 function findSide(x, y) {
 	//top
 	if (x >= start && x <= start + 60 && y >= 80 && y <= 140) {
@@ -657,40 +686,40 @@ function findSide(x, y) {
 	else if (x >= start && x <= start + 60 && y >= 440 && y <= 500) {
 		return 3;
 	}
-	//left
+	//left side
 	else if (x >= (start-165) && x <= (start-165) + 60 && y >= 200 && y <= 260) {
 		return 4;
 	}
-	//right
+	//right side
 	else if (x >= (start+165) && x <= (start+165) + 60 && y >= 200 && y <= 260) {
 		return 5;
 	}
 }
 
-
+//function used to change the position of the search node in 8x8 grid simulations
 function changePos() {
-	var movement = (Math.floor(Math.random() * 4));
-	if (page == 3) {
-		if (movement == 0 || movement == 1) {
+	var movement = (Math.floor(Math.random() * 4)); //generate random integer between 0 and 3
+	if (page == 3) { //if running headed simulation
+		if (movement == 0 || movement == 1) { //50% of the time the search node moves toward the target
 			var movement = headedMovement();
 		}
 	}
-	if (page == 5) {
-		if (checkIfSurrounded()) {
+	if (page == 5) { //if running no backtracking simulation
+		if (checkIfSurrounded()) { //check if search node is surrounded to avoid infinite loop
 			alert("Object collided with itself before finding the target after " + count + " moves");
 			reset();
 		}
 	}
 	if (movement == 0) { //move left
-		if (currentPos.x == 100) {
+		if (currentPos.x == 100) { //if search node is in the far left column
 			currentPos.x = 450;
-			if (!checkWallHit(currentPos.x, currentPos.y)) {
+			if (!checkWallHit(currentPos.x, currentPos.y)) { //if search node does not hit an obstacle increase count: only applicable for 'Obstacles' ang 'Grid Filling' on 8x8
 				count++;
-			} else {
+			} else { //if search node does collide with an obstacle change its position
 				currentPos.x = 100;
 				changePos();
 			}
-		} else {
+		} else { //if search node is not in the left most column
 			currentPos.x -= 50;
 			if (!checkWallHit(currentPos.x, currentPos.y)) {
 				count++;
@@ -701,7 +730,7 @@ function changePos() {
 		}
 	}
 	else if (movement == 1) { //move right
-		if (currentPos.x == 450) {
+		if (currentPos.x == 450) { //if search node is in the far right column
 			currentPos.x = 100;
 			if (!checkWallHit(currentPos.x, currentPos.y)) {
 				count++;
@@ -709,7 +738,7 @@ function changePos() {
 				currentPos.x = 450;
 				changePos();
 			}
-		} else {
+		} else { //if search node is not in the far right column
 			currentPos.x += 50;
 			if (!checkWallHit(currentPos.x, currentPos.y)) {
 				count++;
@@ -720,7 +749,7 @@ function changePos() {
 		}
 	}
 	else if (movement == 2) { //move down
-		if (currentPos.y == 475) {
+		if (currentPos.y == 475) { //if search node is in the bottom row of the grid
 			currentPos.y = 125;
 			if (!checkWallHit(currentPos.x, currentPos.y)) {
 				count++;
@@ -728,7 +757,7 @@ function changePos() {
 				currentPos.y = 475;
 				changePos();
 			}
-		} else {
+		} else { //if the search node is not in the bottom row of the grid
 			currentPos.y += 50;
 			if (!checkWallHit(currentPos.x, currentPos.y)) {
 				count++;
@@ -739,7 +768,7 @@ function changePos() {
 		}
 	}
 	else  { //move up
-		if (currentPos.y == 125) {
+		if (currentPos.y == 125) { //if the search node is in the top row of the grid
 			currentPos.y = 475;
 			if (!checkWallHit(currentPos.x, currentPos.y)) {
 				count++;
@@ -747,7 +776,7 @@ function changePos() {
 				currentPos.y = 125;
 				changePos();
 			}
-		} else {
+		} else { //if the search node is not in the top row of the grid 
 			currentPos.y -= 50;
 			if (!checkWallHit(currentPos.x, currentPos.y)) {
 				count++;
@@ -757,72 +786,73 @@ function changePos() {
 			}
 		}
 	}
-	if (page == 6) {
+	if (page == 6) { //if running a grid filling simulation on 8x8 grid
 		for (let i = 0; i < 64; i++) {
-			if (currentPos.x == arrayOfRects[i].x && currentPos.y == arrayOfRects[i].y) {
+			if (currentPos.x == arrayOfRects[i].x && currentPos.y == arrayOfRects[i].y) { //keep track of all squares visited by the search node
 				arrayOfRects[i].hit = 1;
 			}
 		}
 	}
 }
 
+//changing position of the search node on cubic exterior simulations
 function changePosMulti() {
-	var movement = (Math.floor(Math.random() * 4));
+	var movement = (Math.floor(Math.random() * 4)); //generate random integer between 0 and 3
 	
-	if (findSide(currentPos.x, currentPos.y) == 0) { //top
+	if (findSide(currentPos.x, currentPos.y) == 0) { //if search node is on the top face of the cube
 		if (movement == 0) { //move left
-			if (currentPos.x == 270 && currentPos.y == 80) {
+			if (currentPos.x == 270 && currentPos.y == 80) { //if search node is in the top left corner
 				currentPos.x = 105;
 				currentPos.y = 200;
 			} 
-			else if (currentPos.x == 270 && currentPos.y == 100) {
+			else if (currentPos.x == 270 && currentPos.y == 100) { //if search node is in the left column middle position
 				currentPos.x = 125;
 				currentPos.y = 200;
 
 			}
-			else if (currentPos.x == 270 && currentPos.y == 120) {
+			else if (currentPos.x == 270 && currentPos.y == 120) { //if search node is in the bottom left corner
 				currentPos.x = 145;
 				currentPos.y = 200;
 			}
-			else {
+			else { //if search node is not in the left column
 				currentPos.x -= 20;
 			}
 		}
 		else if (movement == 1) { //move right
-			if (currentPos.x == 310 && currentPos.y == 80) {
+			if (currentPos.x == 310 && currentPos.y == 80) { //if search node is in the top right corner
 				currentPos.x = 475;
 				currentPos.y = 200;
 			} 
-			else if (currentPos.x == 310 && currentPos.y == 100) {
+			else if (currentPos.x == 310 && currentPos.y == 100) { //if search node is in the right most column middle position
 				currentPos.x = 455;
 				currentPos.y = 200;
 
 			}
-			else if (currentPos.x == 310 && currentPos.y == 120) {
+			else if (currentPos.x == 310 && currentPos.y == 120) { //if search node is in the bottom right corner
 				currentPos.x = 435;
 				currentPos.y = 200;
 			}
-			else {
+			else { //if search node is not in the right most column
 				currentPos.x += 20;
 			}
 		}
 		else if (movement == 2) { //move down
-			if (currentPos.y == 120) {
+			if (currentPos.y == 120) { //if search node is in the bottom row
 				currentPos.y = 200;
-			} else {
+			} else { //if search node is not in the bottom row
 				currentPos.y += 20;
 			}
 		}
 		else  { //move up
-			if (currentPos.y == 80) {
+			if (currentPos.y == 80) { //if search node is in the bottom row
 				currentPos.y = 480;
-			} else {
+			} else { //if search node is not in the bottom row
 				currentPos.y -= 20;
 			}
 		}
 	}
 
-	else if (findSide(currentPos.x, currentPos.y) == 1) { //face 
+	else if (findSide(currentPos.x, currentPos.y) == 1) { //if search node is on the front face of the cube
 		if (movement == 0) { //move left
 			if (currentPos.x == 270) {
 				currentPos.x = 145;
@@ -852,7 +882,7 @@ function changePosMulti() {
 			}
 		}
 	}
-	else if (findSide(currentPos.x, currentPos.y) == 2) { //bottom 
+	else if (findSide(currentPos.x, currentPos.y) == 2) { //if search node is on the bottom face of the cube
 		if (movement == 0) { //move left
 			if (currentPos.x == 270 && currentPos.y == 320) {
 				currentPos.x = 145;
@@ -904,7 +934,7 @@ function changePosMulti() {
 			}
 		}
 	}
-	else if (findSide(currentPos.x, currentPos.y) == 3) { //back
+	else if (findSide(currentPos.x, currentPos.y) == 3) { //if search node is on the back face of the cube
 		if (movement == 0) { //move left
 			if (currentPos.x == 270) {
 				currentPos.x = 475;
@@ -936,7 +966,7 @@ function changePosMulti() {
 			}
 		}
 	}
-	else if (findSide(currentPos.x, currentPos.y) == 4) { //left 
+	else if (findSide(currentPos.x, currentPos.y) == 4) { //if search node is on the left face of the cube
 		if (movement == 0) { //move left
 			if (currentPos.x == 105) {
 				currentPos.x = 310;
@@ -985,7 +1015,7 @@ function changePosMulti() {
 		}
 		
 	}
-	else { //right 
+	else { //if search node is on the right face of the cube
 		if (movement == 0) { //move left
 			if (currentPos.x == 435) {
 				currentPos.x = 310;
@@ -1033,11 +1063,12 @@ function changePosMulti() {
 			}
 		}
 	}
-	count++;
-	tracePath(currentPos.x, currentPos.y);
+	count++; //increase the count of moves by 1
+	tracePath(currentPos.x, currentPos.y); //keep track of all visited squares
 		
 }
 
+//declare and initialize rectangle used for cubic exterior simulations
 var rectMulti = {
     x: canvas.width/2 - 40,
     y: 80,
@@ -1046,100 +1077,102 @@ var rectMulti = {
     hit: 0
 };
 
+//fill array of rectangles used in cubic exterior simulations with all 54 grid positions
 function fillMultiRect() {
 	for (let i = 0; i < 54; i++) {
-	//top, first row
+	//top face, first row
 	if (i <= 2) {
 		rectMulti.x = start + i*20;
 		rectMulti.y = 80;
 	}
-	//top, second row
+	//top face, second row
 	else if (i <= 5) {
 		rectMulti.x = start + (i - 3) * 20;
 		rectMulti.y = 100;
 	}
-	//top, third row
+	//top face, third row
 	else if(i <= 8) {
 		rectMulti.x = start + (i - 6) * 20;
 		rectMulti.y = 120;
 	}
 
-	//front, first row
+	//front face, first row
 	else if (i <= 11) {
 		rectMulti.x = start + (i - 9) * 20;
 		rectMulti.y = 200;
 	}
-	//front, second row
+	//front face, second row
 	else if (i <= 14) {
 		rectMulti.x = start + (i - 12) * 20;
 		rectMulti.y = 220;
 	}
-	//front, third row
+	//front face, third row
 	else if(i <= 17) {
 		rectMulti.x = start + (i - 15) * 20;
 		rectMulti.y = 240;
 	}
-	//bottom, first row
+	//bottom face, first row
 	else if (i <= 20) {
 		rectMulti.x = start + (i - 18) * 20;
 		rectMulti.y = 320;
 	}
-	//bottom, second row
+	//bottom face, second row
 	else if (i <= 23) {
 		rectMulti.x = start + (i - 21) * 20;
 		rectMulti.y = 340;
 	}
-	//bottom, third row
+	//bottom face, third row
 	else if(i <= 26) {
 		rectMulti.x = start + (i - 24) * 20;
 		rectMulti.y = 360;
 	}
-	//back, first row
+	//back face, first row
 	else if (i <= 29) {
 		rectMulti.x = start + (i - 27) *20;
 		rectMulti.y = 440;
 	}
-	//back, second row
+	//back face, second row
 	else if (i <= 32) {
 		rectMulti.x = start + (i - 30) * 20;
 		rectMulti.y = 460;
 	}
-	//back, third row
+	//back face, third row
 	else if(i <= 35) {
 		rectMulti.x = start + (i - 33) * 20;
 		rectMulti.y = 480;
 	}
-	//left, first row
+	//left face, first row
 	else if (i <= 38) {
 		rectMulti.x = (start - 165)+ (i - 36) * 20;
 		rectMulti.y = 200;
 	}
-	//left, second row
+	//left face, second row
 	else if (i <= 41) {
 		rectMulti.x = (start - 165) + (i - 39) * 20;
 		rectMulti.y = 220;
 	}
-	//left, third row
+	//left face, third row
 	else if(i <= 44) {
 		rectMulti.x = (start - 165) + (i - 42) * 20;
 		rectMulti.y = 240;
 	}
-	//right, first row
+	//right face, first row
 	else if (i <= 47) {
 		rectMulti.x = (start + 165) + (i - 45) *20;
 		rectMulti.y = 200;
 	}
-	//right, second row
+	//right face, second row
 	else if (i <= 50) {
 		rectMulti.x = (start + 165) + (i - 48) * 20;
 		rectMulti.y = 220;
 	}
-	//right, third row
+	//right face, third row
 	else if(i <= 53) {
 		rectMulti.x = (start + 165) + (i - 51) * 20;
 		rectMulti.y = 240;
 	}
-	arrayOfRectsMulti[i] = {
+	//initialize each array index with a specific rectangle (each with a unique position) 
+	arrayOfRectsMulti[i] = { 
 		x: rectMulti.x,
 		y: rectMulti.y,
 		w: 20,
@@ -1149,18 +1182,20 @@ function fillMultiRect() {
 	}
 }
 
-fillMultiRect();
+fillMultiRect(); //fill rectangle array used for cubic exterior simulations
 	
-var arrayOfRects = [];
+var arrayOfRects = []; // array of rectangles used for 8x8 grid
 
+//get mouse positon: record location of the user click
 function getMousePos(canvas, event) {
     var rect = canvas.getBoundingClientRect();
-    return {
+    return { //return the position of the users click within the bounds of the canvas 
         x: event.clientX - rect.left,
         y: event.clientY - rect.top
     };
 }
 
+//fill array of rectangles used in 8x8 grid simulations with all 64 grid positions
 function fillRectArray() {
 	for (let i = 0; i < 64; i++) {
 		//first row
@@ -1204,7 +1239,7 @@ function fillRectArray() {
 			rect.x = 100 + (i - 56) * 50;
 			rect.y = 475;
 		}
-
+		//initialize each array index with a specific rectangle (each with a unique position) 
 		arrayOfRects[i] = {
 			x: rect.x,
 			y: rect.y,
@@ -1216,48 +1251,49 @@ function fillRectArray() {
 	}
 }
 
-fillRectArray();
+fillRectArray(); //fill rectangle array used for 8x8 grid simulations
 
-
+//check if the mouse click is inside a rectangle
 function isInside(pos, rect){
     return pos.x > rect.x && pos.x < rect.x+rect.w && pos.y < rect.y + rect.h && pos.y > rect.y;
 }
 
+//event listener detects user clicks 
 canvas.addEventListener('click', function(evt) {
-    var mousePos = getMousePos(canvas, evt);
+    var mousePos = getMousePos(canvas, evt);//get the position of the users click
 
-    if (page == 1 && isInside(mousePos, begin)) {
+    if (page == 1 && isInside(mousePos, begin)) { //if user clicks begin move to page 2
     	page = 2;
     }
-    else if (page == 2 && isInside(mousePos, headed)) {
+    else if (page == 2 && isInside(mousePos, headed)) { //if user clicks 'Headed' move to headed simulation
     	page = 3;
     }
-    else if (page == 2 && isInside(mousePos, obstacles)) {
+    else if (page == 2 && isInside(mousePos, obstacles)) { //if user clicks 'Obstacles' move to obstacle simulation
     	page = 4;
     }
-    else if (page == 2 && isInside(mousePos, backtracking)) {
+    else if (page == 2 && isInside(mousePos, backtracking)) { //if user clicks 'No Backtracking' move to no backtracking simulation
     	page = 5;
     }
-    else if (page == 2 && isInside(mousePos, gridFilling)) {
-    	reset();
+    else if (page == 2 && isInside(mousePos, gridFilling)) { //if user clicks 'Grid Filling' move to grid filling simulation for 8x8 grid
+    	reset(); 
     	page = 6;
     }
-    else if (page == 2 && isInside(mousePos, targetFinding)) {
+    else if (page == 2 && isInside(mousePos, targetFinding)) { //if user clicks 'Target Finding' move to target finding simulation on cubic exterior grid
     	page = 7;
     }
-    else if (page == 2 && isInside(mousePos, gridFillingMulti)) {
+    else if (page == 2 && isInside(mousePos, gridFillingMulti)) { //if user clicks 'Grid Filling' move to grid filling simulation on cubic exterior grid
     	page = 8;
     }
-    else if (page == 2 && isInside(mousePos, copsAndRobbers)) {
+    else if (page == 2 && isInside(mousePos, copsAndRobbers)) { // if user clicks 'Cops + Robbers' move to cops and robbers simulation on 8x8 grid
     	page = 9;
     }
-    else if (page == 3) {
+    else if (page == 3) { //headed simulation
     	for (let i = 0; i < 64; i++) {
-    		if (directions == 1 && isInside(mousePos,arrayOfRects[i])) {
+    		if (directions == 1 && isInside(mousePos,arrayOfRects[i])) { //select start position for search node
      				currentPos.x = arrayOfRects[i].x;
      				currentPos.y = arrayOfRects[i].y;
      				directions = 2;
-     		} else if (directions == 2 && isInside(mousePos,arrayOfRects[i])) {
+     		} else if (directions == 2 && isInside(mousePos,arrayOfRects[i])) { //select target position
      				targetPos.x = arrayOfRects[i].x;
      				targetPos.y = arrayOfRects[i].y;
      				directions = 3;
@@ -1265,34 +1301,34 @@ canvas.addEventListener('click', function(evt) {
      	}
     }
 
-    else if (page == 4) {
+    else if (page == 4) { //obstacles simulation
     	for (let i = 0; i < 64; i++) {
-    		if (directions == 1 && isInside(mousePos,arrayOfRects[i])) {
+    		if (directions == 1 && isInside(mousePos,arrayOfRects[i])) { //select starting position for search node
      				currentPos.x = arrayOfRects[i].x;
      				currentPos.y = arrayOfRects[i].y;
      				directions = 2;
      		} 
-     		else if (directions == 2 && isInside(mousePos, arrayOfRects[i])) {
+     		else if (directions == 2 && isInside(mousePos, arrayOfRects[i])) { //select obstacle positions
    	 				arrayOfRects[i].walls = 1;
     		}
-    		else if (directions == 2 && isInside(mousePos, startSimulation)) {
+    		else if (directions == 2 && isInside(mousePos, startSimulation)) { //select done when finished with placing obstacles
     				directions = 3;
     		}
-     		else if (directions == 3 && isInside(mousePos,arrayOfRects[i])) {
+     		else if (directions == 3 && isInside(mousePos,arrayOfRects[i])) { //select target position
      				targetPos.x = arrayOfRects[i].x;
      				targetPos.y = arrayOfRects[i].y;
      				directions = 4;
      		}
      	}
     }
-    else if (page == 5) {
+    else if (page == 5) { //no backtracking simulation
     	for (let i = 0; i < 64; i++) {
-    		if (directions == 1 && isInside(mousePos,arrayOfRects[i])) {
+    		if (directions == 1 && isInside(mousePos,arrayOfRects[i])) { //select starting position for search node 
      				currentPos.x = arrayOfRects[i].x;
      				currentPos.y = arrayOfRects[i].y;
      				directions = 2;
      		} 
-     		else if (directions == 2 && isInside(mousePos,arrayOfRects[i])) {
+     		else if (directions == 2 && isInside(mousePos,arrayOfRects[i])) { //select target position
      				targetPos.x = arrayOfRects[i].x;
      				targetPos.y = arrayOfRects[i].y;
      				directions = 3;
@@ -1300,40 +1336,40 @@ canvas.addEventListener('click', function(evt) {
      	}
     }
 
-    else if(page == 6) {
+    else if(page == 6) { //grid filling simulation on an 8x8 grid
     	for (let i = 0; i < 64; i++) {
-    		if (directions == 1 && isInside(mousePos,arrayOfRects[i])) {
+    		if (directions == 1 && isInside(mousePos,arrayOfRects[i])) { //select starting position
      				currentPos.x = arrayOfRects[i].x;
      				currentPos.y = arrayOfRects[i].y;
      				directions = 2;
      		} 
-     		else if (directions == 2 && isInside(mousePos, arrayOfRects[i])) {
+     		else if (directions == 2 && isInside(mousePos, arrayOfRects[i])) { //select obstacle positions
    	 				arrayOfRects[i].walls = 1;
    	 				arrayOfRects[i].hit = 1;
     		}
-    		else if (directions == 2 && isInside(mousePos, startSimulation)) {
+    		else if (directions == 2 && isInside(mousePos, startSimulation)) { //select target position
     					directions = 3;
     		}
      	}
     }
-    else if (page == 7) {
+    else if (page == 7) { //target finding simulation on cubic exterior grid
     	for (let i = 0; i < 54; i++) {
-    		if (isInside(mousePos, arrayOfRectsMulti[i]) && directions == 1) {
+    		if (isInside(mousePos, arrayOfRectsMulti[i]) && directions == 1) { //select starting position for search node
     				startIndex = i;
     				currentPos.x = arrayOfRectsMulti[i].x;
     				currentPos.y = arrayOfRectsMulti[i].y;
         			directions = 2;
     		}
-    		else if (isInside(mousePos, arrayOfRectsMulti[i]) && directions == 2) {
+    		else if (isInside(mousePos, arrayOfRectsMulti[i]) && directions == 2) { //select target position
     		 	targetPos.x = arrayOfRectsMulti[i].x;
     		 	targetPos.y = arrayOfRectsMulti[i].y;
     		 	directions = 3;
     	 	}
     	}
     }
-    else if (page == 8) {
+    else if (page == 8) { //grid filling simulation on cubic exterior grid
     	for (let i = 0; i < 54; i++) {
-    		if (isInside(mousePos, arrayOfRectsMulti[i]) && directions == 1) {
+    		if (isInside(mousePos, arrayOfRectsMulti[i]) && directions == 1) { //select starting position for search node
     				startIndex = i;
     				currentPos.x = arrayOfRectsMulti[i].x;
     				currentPos.y = arrayOfRectsMulti[i].y;
@@ -1341,27 +1377,32 @@ canvas.addEventListener('click', function(evt) {
     		}
     	}
     }
+    else if (page == 9) { //allow user to return to home page
+    	if (isInside(mousePos, returnMessage)) {
+    		page = 2;
+    	}
+    }
 
 }, false);
 
-drawBox();
+drawBox(); //draw 8x8 grid
 
-
+//function that will continually be called throughout the progeram
 function update() {
 	
-	//Page 1: Welcome and Begin button
+	//draw welcome and begin page
 	if (page == 1) {
 		ctx.clearRect(0, 0, 600, 600);
 		drawPageOne();
 	}
 
-	//Page 2: Select Random Walk Type
+	//draw select random walk type page
 	else if (page == 2) {
 		ctx.clearRect(0, 0, 600, 600);
 		drawPageTwo();
 	}
 
-	//Select Starting Position for all Pages
+	//please select starting position
 	else if ((page == 3 && directions == 1) || 
 		(page == 4 && directions == 1) || 
 		(page == 5 && directions == 1) || 
@@ -1371,17 +1412,18 @@ function update() {
 			directionOne();
 	}
 
-	//Page 3: Starting position
+	//heading simulation: select target position
 	else if (page == 3 && directions == 2) {
 		ctx.clearRect(0, 0, 600, 120);
 		drawStartingPosition();
-		pageThreeDirectionTwo();
+		selectTarget();
 	}
 
+	//heading simulation: enjoy simulation
 	else if (page == 3 && directions == 3) {
 		ctx.clearRect(0, 0, 600, 120);
-		ctx.clearRect(currentPos.x + 1, currentPos.y + 1, 48, 48);
-		if (checkCollisionOnTarget() == true) {
+		ctx.clearRect(currentPos.x + 1, currentPos.y + 1, 48, 48); //clear previous rectangle as we don't want to show objects path taken
+		if (checkCollisionOnTarget() == true) { //check if search node finds the target 
 			alert("Target hit after " + count + " moves");
 			reset();
 		}
@@ -1391,7 +1433,7 @@ function update() {
 		drawCurrentPosition(currentPos.x, currentPos.y);
 	}
 
-	//Page 4: Starting Position/Ask user to draw obstacles
+	//obstacle simulation: ask user to draw obstacles and select done when finished
 	else if (page == 4 && directions == 2) {
 		ctx.clearRect(0, 0, 600, 120);
 		drawStartingPosition();
@@ -1399,12 +1441,14 @@ function update() {
 		drawWalls();
 	}
 
+	//obstacle simulation: select target position
 	else if (page == 4 && directions == 3) {
 		ctx.clearRect(0, 0, 600, 120);
 		selectTarget();
 		drawStartingPosition();
 	}
 
+	//obstacle simulation: enjoy the simulation
 	else if (page == 4 && directions == 4) {
 		ctx.clearRect(0, 0, 600, 120);
 		ctx.clearRect(currentPos.x + 1, currentPos.y + 1, 48, 48);
@@ -1419,14 +1463,14 @@ function update() {
 		drawCurrentPosition(currentPos.x, currentPos.y);
 	}
 
-	//Page 5: Startiing Position
-
+	//no backtracking simulation: select a target position
 	else if (page == 5 && directions == 2) {
 		ctx.clearRect(0, 0, 600, 120);
 		selectTarget();
 		drawStartingPosition();
 	}
 
+	//no backtracking simulation: enjoy simulation
 	else if (page == 5 && directions == 3) {
 		ctx.clearRect(0, 0, 600, 120);
 		enjoySimulation();
@@ -1436,20 +1480,17 @@ function update() {
 			reset();
 		}
 		changePos();
-		noBackTracking(currentPos.x, currentPos.y);
+		noBackTracking(currentPos.x, currentPos.y); //check if search node is completely surounded: if all nodes to its left, right, top, and bottom have been visited
 		drawCurrentPosition(currentPos.x, currentPos.y);
 	}
-
-
-
-	//Page 6: Starting Position/Ask user to draw obstacles
+	//grid filling simulation on an 8x8 grid: ask user to draw obstacles and select done when finished
 	else if (page == 6 && directions == 2) {
 		ctx.clearRect(0, 0, 600, 120);
 		drawStartingPosition();
 		pageFourDirectionTwo();
 		drawWalls();
 	}
-
+	//grid filling simulation on an 8x8 grid: enjoy simulation
 	else if (page == 6 && directions == 3) {
 		ctx.clearRect(0, 0, 600, 120);
 		if (checkGridFilled()) {
@@ -1461,13 +1502,7 @@ function update() {
 		drawWalls();
 		drawCurrentPosition(currentPos.x, currentPos.y);
 	}
-
-	//Page 7: Basic target finding on multiple surface 
-	else if (page == 5 && directions == 2) {
-		ctx.clearRect(0, 0, 600, 120);
-		selectTarget();
-		drawStartingPosition();
-	}
+	//target finding simulation on cubic exterior grid: select starting position for search node
 	else if (page == 7 && directions == 1) {
 		ctx.clearRect(0, 0, 600, 600)
 		multiDirectionOne();
@@ -1479,11 +1514,13 @@ function update() {
 		drawRight();
 		drawLabels();
 	}
+	//target finding simulation on cubic exterior grid: select target position
 	else if (page == 7 && directions == 2) {
 		ctx.clearRect(0, 0, 600, 50);
 		multiDirectionTwo();
 		drawMultiStartingPosition();
 	}
+	//target finding simulation on cubic exterior grid: enjoy simulation
 	else if (page == 7 && directions == 3) {
 		ctx.clearRect(0, 0, 600, 50);
 		drawMultiTargetPos();
@@ -1496,7 +1533,7 @@ function update() {
 		changePosMulti();
 		drawCurrentMultiPosition(currentPos.x, currentPos.y);
 	}
-
+	//target finding simulation on cubic exterior grid: trace path taken
 	else if (page == 7 && directions == 4) {
 		ctx.clearRect(0, 0, 600, 50);
 		ctx.fillStyle = 'green';
@@ -1508,11 +1545,12 @@ function update() {
 		}
 		directions = 5;
 	}
+	//target finding simulation on cubic exterior grid: this was your path taken message
 	else if (page == 7 && directions == 5) {
 		alert("This Was the Path Taken");
 		resetMulti();
 	}
-
+	//grid filling simulation on cubic exterior grid: select starting position
 	else if (page == 8 && directions == 1) {
 		ctx.clearRect(0, 0, 600, 600)
 		multiDirectionOne();
@@ -1524,6 +1562,7 @@ function update() {
 		drawRight();
 		drawLabels();
 	}
+	//grid filling simulation on cubic exterior grid: enjoy simulation
 	else if (page == 8 && directions == 2) {
 		ctx.clearRect(0, 0, 600, 50);
 		multiDirectionThree();
@@ -1534,30 +1573,17 @@ function update() {
 		changePosMulti();
 		drawCurrentMultiPosition(currentPos.x, currentPos.y);
 	}
-
+	//cops and robbers: lets see who will win cops or robbers
 	 else if (page == 9 && directions == 1) {
 	 	ctx.clearRect(0, 0, 600, 600);
+	 	drawTemporaryMessage();
 	 	drawBox();
-	 	copsRobbersDirection();
-	 	drawStationaryCops();
-	 }
+	 	//copsRobbersDirection();
+	 	//drawStationaryCops();
+	}
 
-	requestAnimationFrame(update);
+	requestAnimationFrame(update); //continually calls update function, allows us to complete animations
 }
 
-update();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+update(); //call update function
 
