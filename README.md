@@ -6,10 +6,7 @@ This program is a random walk generator which includes a variety of simulation t
 **Single Face:** Simulations are completed on an 8 by 8 grid.
 
 **Heading P(0.5):** The user will select a starting position for the search node and a position for the target node. 
-  For each move, the search node wil have a 50% probably of moving toward the target node.
-  
-  ![Heading](https://user-images.githubusercontent.com/96018567/152034101-e10944dd-296e-47b5-a886-93bfcc21c4b8.gif =250x250)
- 
+  For each move, the search node wil have a 50% probably of moving toward the target node
   
 **Obstactles:** The user will select a starting position for the search node, obstacles that will obstruct its path, and a position for the target node. 
   If the user completly encloses the search node with obstacles, if will never reach the target and will run indefinitely. 
@@ -29,4 +26,4 @@ This program is a random walk generator which includes a variety of simulation t
   
 **Cops and Robbers:** Simulation is completed on an 8 by 8 grid.
   This is the most complex simulation of this program as it involves multiple search nodes (cops) and target nodes (robbers).
-  This program will be completed by January 30 2022.
+  This program will be completed by February 30 2022.
