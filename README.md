@@ -8,6 +8,8 @@ This program is a random walk generator which includes a variety of simulation t
 **Heading P(0.5):** The user will select a starting position for the search node and a position for the target node. 
   For each move, the search node wil have a 50% probably of moving toward the target node
   
+https://user-images.githubusercontent.com/96018567/152035332-6589fef8-e009-4765-9e55-bae500578508.mov
+  
 **Obstactles:** The user will select a starting position for the search node, obstacles that will obstruct its path, and a position for the target node. 
   If the user completly encloses the search node with obstacles, if will never reach the target and will run indefinitely. 
   
