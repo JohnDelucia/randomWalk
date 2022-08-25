@@ -36,6 +36,4 @@ https://user-images.githubusercontent.com/96018567/152036480-3879969f-0181-4d30-
   
 https://user-images.githubusercontent.com/96018567/152036512-813fc62f-1148-4fc0-a0f7-d474d23e2776.mov
 
-**Cops and Robbers:** Simulation is completed on an 8 by 8 grid.
-  This is the most complex simulation of this program as it involves multiple search nodes (cops) and target nodes (robbers).
-  This program will be completed by February 30 2022.
+**Cops and Robbers:** This program is under development. 
