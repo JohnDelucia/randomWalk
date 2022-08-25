@@ -1,6 +1,5 @@
 # Random Walk Simulator
 
-Hello my name is John Delucia, I am a senior at Wake Forest University studying Engineering, Mathematics and Computer Science. 
 This program is a random walk generator which includes a variety of simulation types explained below. 
 
 **Single Face:** Simulations are completed on an 8 by 8 grid.
